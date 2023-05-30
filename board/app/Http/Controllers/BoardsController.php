@@ -1,10 +1,17 @@
 <?php
+/**********************************************
+ * 프로젝트명   : laravel_board
+ * 디렉토리     : Controllers
+ * 파일명       : BoardController.php
+ * 이력         : v001 0526 BJ.Kwon new
+ *              v002 0530 BJ.Kwon 유효성 체크 추가
+ **********************************************/
 
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB; // DB객체 사용 (쿼리빌더)
-
+use Illuminate\Support\Facades\Validator; // v002 add
 use App\Models\Boards; // Model객체 사용 (ORM)
 
 class BoardsController extends Controller
@@ -38,11 +45,18 @@ class BoardsController extends Controller
      */
     public function store(Request $req)
     {
+        // v002 add start
+        $req->validate([
+            'title' => 'required|between:3,30'
+            ,'content' => 'required|max:1000'
+        ]);
+        // v002 add end
+
         // 새로 생성해야 하는 데이터(insert는 db에 데이터가 존재하지x)이기 때문에 새로운 엘로퀀트 객체를 생성함
         $boards = new Boards([
             'title' => $req->input('title')
             ,'content' => $req->input('content')
-            ,'hits' => 0
+            // ,'hits' => 0 // v002 del
         ]);
         // insert
         $boards->save();
@@ -59,6 +73,7 @@ class BoardsController extends Controller
     {
         $boards = Boards::find($id);
         $boards->hits++; // 조회수 올려주기
+        $boards->timestamps=false; // v002 add 조회수가 올라가도 수정일자가 변경되지않도록 설정
         $boards->save();
 
         return view('detail')->with('data',Boards::findOrFail($id));
@@ -100,6 +115,39 @@ class BoardsController extends Controller
         // ]);
 
         // 2. ORM ver1
+        // v002 add start--------------------
+
+        // id를 리퀘스트 객체에 합치는 방법1
+        $request->request->add(["id" => $id]);
+        // id를 리퀘스트 객체에 합치는 방법2
+        // $arr = ['id' => $id];
+        // $reqest->merge($arr);
+
+        // 유효성 검사 방법 1
+        // $request->validate([
+        //     'id' => 'required|interger'
+        //     ,'title' => 'required|between:3,30'
+        //     ,'content' => 'required|max:2000'
+        // ]);
+
+        // 유효성 검사 방법 2
+        $validator = Validator::make(
+            $request->only('id','title','content')
+            ,[
+                'id' => 'required|integer'
+                ,'title' => 'required|between:3,30'
+                ,'content' => 'required|max:2000'
+            ]
+        );
+
+        // redirect()->back() : 이전에 요청이 왔던 페이지로 돌아감
+        // withInput() : 사용자가 적은값을 session에 저장..?
+        if($validator->fails()){
+            return redirect()->back()->withErrors($validator)->withInput($request->only('title','content'));
+        }
+
+        // v002 add end-----------------------
+
         $boards = Boards::find($id);
         $boards->title = $request->title;
         $boards->content = $request->content;

@@ -7,13 +7,16 @@
     <title>Write</title>
 </head>
 <body>
+    {{-- BoardsController에 store메소드안에 validate --}}
+    @include('layout.errorsvalidate')
     <form action="{{route('boards.store')}}" method="POST">
         @csrf
         <label for="title">제목 : </label>
-        <input type="text" name="title" id="title">
+        {{-- old()메소드 : 유효성 검사 error 발생시 기존값 유지 --}}
+        <input type="text" name="title" id="title" value="{{old('title')}}">
         <br>
         <label for="content">내용 : </label>
-        <textarea name="content" id="content"></textarea>
+        <textarea name="content" id="content">{{old('content')}}</textarea>
         <button type="submit">작성</button>
     </form>
 </body>
