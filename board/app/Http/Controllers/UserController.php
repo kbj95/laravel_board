@@ -14,10 +14,24 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 // use Illuminate\Support\Facades\DB; // DB객체 사용 (쿼리빌더)
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
     function login(){
+        
+        // 로그 남기기
+        // $arr['key'] = 'test';
+        // $arr['kim'] = 'park';
+        // Log::emergency('emergency', $arr);
+        // Log::alert('aler', $arr);
+        // Log::critical('critical', $arr);
+        // Log::error('error', $arr);
+        // Log::warning('warning', $arr);
+        // Log::notice('notice', $arr);
+        // Log::info('info', $arr);
+        // Log::debug('debug', $arr);
+
         return view('login');
     }
 

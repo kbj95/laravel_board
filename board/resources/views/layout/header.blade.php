@@ -1,4 +1,4 @@
-<h2>HEADER</h2>
+<h1><img src="{{asset('Img/logo.png')}}" alt="logo"></h1>
 
 {{-- 로그인 상태(인증된 상태) --}}
 @auth
