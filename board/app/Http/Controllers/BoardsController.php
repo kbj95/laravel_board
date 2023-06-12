@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB; // DB객체 사용 (쿼리빌더)
 use Illuminate\Support\Facades\Validator; // v002 add
 use App\Models\Boards; // Model객체 사용 (ORM)
 
+
 class BoardsController extends Controller
 {
     /**
@@ -24,12 +25,18 @@ class BoardsController extends Controller
     public function index()
     {
         // 로그인 체크 
-        if(auth()->guest()){
-            return redirect()->route('users.login');
-        }
+        // if(auth()->guest()){
+        //     return redirect()->route('users.login');
+        // }
 
+        $test = DB::select('
+            SELECT id,email
+            FROM users
+        ');
         $result = Boards::select(['id','title','hits','created_at','updated_at'])->orderBy('hits','desc')->get();
-        return view('list')->with('data', $result);
+        // return view('list')->with('data', $result);
+        return view('list')->with('test', $test)->with('data', $result);
+
     }
 
     /**
@@ -99,7 +106,7 @@ class BoardsController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified resource in storage
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id

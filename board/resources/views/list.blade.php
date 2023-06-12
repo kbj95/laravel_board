@@ -4,6 +4,9 @@
 
 @section('contents')
     <a href="{{route('boards.create')}}">작성하기</a>
+    <hr>
+    <p>아이디 : {{$test[0]->id}}</p>
+    <hr>
     <table>
         <tr>
             <th>글번호</th>
